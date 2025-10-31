@@ -1,0 +1,11 @@
+doctrine:
+    orm:
+        entity_managers:
+            default:
+                mappings:
+                    PurchaseManageBundle:
+                        is_bundle: true
+                        type: attribute
+                        dir: Entity
+                        prefix: Tourze\PurchaseManageBundle\Entity
+                        alias: PurchaseManageBundle

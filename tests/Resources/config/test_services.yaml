@@ -1,0 +1,19 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: true  # 测试环境中需要公开服务
+
+  # Repository 服务需要公开
+  Tourze\PurchaseManageBundle\Repository\:
+    resource: '../../../src/Repository/'
+    public: true
+
+  # Service 服务需要公开
+  Tourze\PurchaseManageBundle\Service\:
+    resource: '../../../src/Service/'
+    public: true
+
+  # 为测试环境创建一个 NullLogger
+  test.null_logger:
+    class: Psr\Log\NullLogger

@@ -1,0 +1,89 @@
+{#
+    购买订单到货记录显示模板
+    用于 EasyAdmin 详情页面显示关联的到货记录
+#}
+{% if field.value is not empty %}
+    {% set statusClassMap = {
+        'pending': 'secondary',
+        'shipped': 'primary',
+        'in_transit': 'info',
+        'arrived': 'warning',
+        'received': 'success',
+        'inspected': 'dark',
+        'warehoused': 'success'
+    } %}
+    <div class="purchase-order-deliveries">
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>批次号</th>
+                        <th>到货状态</th>
+                        <th>物流公司</th>
+                        <th>物流单号</th>
+                        <th>预计到达时间</th>
+                        <th>实际到达时间</th>
+                        <th>签收信息</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for delivery in field.value %}
+                        <tr>
+                            <td>
+                                <strong>{{ delivery.batchNumber|default('N/A') }}</strong>
+                            </td>
+                            <td>
+                                {% set statusClass = statusClassMap[delivery.status.value] ?? 'secondary' %}
+                                <span class="badge bg-{{ statusClass }}">{{ delivery.status.getLabel() }}</span>
+                            </td>
+                            <td>
+                                {% if delivery.logisticsCompany %}
+                                    <span class="text-primary">{{ delivery.logisticsCompany }}</span>
+                                {% else %}
+                                    <span class="text-muted">无物流信息</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if delivery.trackingNumber %}
+                                    <span class="badge bg-info">{{ delivery.trackingNumber }}</span>
+                                {% else %}
+                                    <span class="text-muted">无运单号</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if delivery.estimatedArrivalTime %}
+                                    <span class="text-warning">{{ delivery.estimatedArrivalTime|date('Y-m-d H:i') }}</span>
+                                {% else %}
+                                    <span class="text-muted">--</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if delivery.actualArrivalTime %}
+                                    <span class="text-success">{{ delivery.actualArrivalTime|date('Y-m-d H:i') }}</span>
+                                {% else %}
+                                    <span class="text-muted">--</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if delivery.receiveTime %}
+                                    <span class="badge bg-success">已签收</span>
+                                    <br><small class="text-muted">{{ delivery.receiveTime|date('Y-m-d H:i') }}</small>
+                                    {% if delivery.receivedBy %}
+                                        <br><small class="text-muted">签收人: {{ delivery.receivedBy }}</small>
+                                    {% endif %}
+                                {% else %}
+                                    <span class="badge bg-warning">未签收</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% else %}
+    <div class="alert alert-info">
+        <i class="fas fa-info-circle"></i>
+        暂无到货记录
+    </div>
+{% endif %}

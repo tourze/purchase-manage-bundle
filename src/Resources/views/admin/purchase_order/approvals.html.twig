@@ -1,0 +1,71 @@
+{#
+    购买订单审批记录显示模板
+    用于 EasyAdmin 详情页面显示关联的审批记录
+#}
+{% if field.value is not empty %}
+    {% set statusClassMap = {
+        'pending': 'warning',
+        'approved': 'success',
+        'rejected': 'danger',
+        'cancelled': 'secondary'
+    } %}
+    <div class="purchase-order-approvals">
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>审批级别</th>
+                        <th>审批状态</th>
+                        <th>审批人</th>
+                        <th>审批时间</th>
+                        <th>审批意见</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for approval in field.value %}
+                        <tr>
+                            <td>
+                                <span class="badge bg-secondary">{{ approval.level }}</span>
+                            </td>
+                            <td>
+                                {% set statusClass = statusClassMap[approval.status.value] ?? 'secondary' %}
+                                <span class="badge bg-{{ statusClass }}">{{ approval.status.getLabel() }}</span>
+                            </td>
+                            <td>
+                                {% if approval.approverName %}
+                                    <span class="fw-bold">{{ approval.approverName }}</span>
+                                    {% if approval.approverRole %}
+                                        <br><small class="text-muted">{{ approval.approverRole }}</small>
+                                    {% endif %}
+                                {% elseif approval.approverId %}
+                                    <span class="text-muted">ID: {{ approval.approverId }}</span>
+                                {% else %}
+                                    <span class="text-muted">待审批</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if approval.approveTime %}
+                                    <span class="text-primary">{{ approval.approveTime|date('Y-m-d H:i:s') }}</span>
+                                {% else %}
+                                    <span class="text-muted">--</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if approval.comment %}
+                                    <span class="text-break">{{ approval.comment }}</span>
+                                {% else %}
+                                    <span class="text-muted">无意见</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% else %}
+    <div class="alert alert-info">
+        <i class="fas fa-info-circle"></i>
+        暂无审批记录
+    </div>
+{% endif %}

@@ -1,0 +1,67 @@
+{#
+    购买订单项目显示模板
+    用于 EasyAdmin 详情页面显示关联的订单项
+#}
+{% if field.value is not empty %}
+    <div class="purchase-order-items">
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>产品名称</th>
+                        <th>产品编码</th>
+                        <th>规格</th>
+                        <th>数量</th>
+                        <th>单价</th>
+                        <th>小计</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in field.value %}
+                        <tr>
+                            <td>
+                                <strong>{{ item.productName }}</strong>
+                                {% if item.specification %}
+                                    <br><small class="text-muted">规格: {{ item.specification }}</small>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if item.productCode %}
+                                    <span class="badge bg-info">{{ item.productCode }}</span>
+                                {% else %}
+                                    <span class="text-muted">无编码</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ item.specification|default('无规格') }}</td>
+                            <td>
+                                <span class="badge bg-primary">{{ item.quantity }}</span>
+                                {% if item.unit %}
+                                    <small class="text-muted">{{ item.unit }}</small>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <span class="text-success fw-bold">¥{{ item.unitPrice|number_format(2) }}</span>
+                            </td>
+                            <td>
+                                <span class="text-danger fw-bold">¥{{ item.subtotal|number_format(2) }}</span>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot class="table-light">
+                    <tr>
+                        <td colspan="5" class="text-end fw-bold">总计:</td>
+                        <td class="text-danger fw-bold">
+                            ¥{{ field.value|reduce((carry, item) => carry + item.subtotal, 0)|number_format(2) }}
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+{% else %}
+    <div class="alert alert-info">
+        <i class="fas fa-info-circle"></i>
+        暂无订单项目
+    </div>
+{% endif %}

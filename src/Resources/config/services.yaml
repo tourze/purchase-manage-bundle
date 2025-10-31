@@ -1,0 +1,15 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: false
+
+  Tourze\PurchaseManageBundle\Repository\:
+    resource: '../../Repository/'
+
+  Tourze\PurchaseManageBundle\Service\:
+    resource: '../../Service/'
+
+  Tourze\PurchaseManageBundle\Controller\:
+    resource: '../../Controller/'
+    tags: ['controller.service_arguments']
